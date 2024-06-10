@@ -48,6 +48,14 @@ form {
     img {
       border-radius: 12px;
     }
+    .favorite {
+      margin-left: auto;
+      cursor: pointer;
+      color: transparent;
+      &.filled {
+        color: #fee300e8;
+      }
+    }
   }
   .card__detail {
     display: flex;

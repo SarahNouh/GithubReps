@@ -61,7 +61,9 @@ function App() {
         <button>Search</button>
       </form>
 
-      <ul className="cards-container">{loading ? <p>loading...</p> : repos.map(repo => <RepoCard repo={repo} />)}</ul>
+      <ul className="cards-container">
+        {loading ? <p>loading...</p> : repos.map(repo => <RepoCard repo={repo} key={repo.id} />)}
+      </ul>
     </main>
   );
 }
