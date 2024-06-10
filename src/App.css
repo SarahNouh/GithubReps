@@ -30,6 +30,12 @@ form {
     cursor: pointer;
   }
 }
+.error {
+  color: red;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
 .cards-container {
   list-style-type: none;
   padding-inline-start: 0;

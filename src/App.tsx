@@ -18,6 +18,7 @@ function App() {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [formError, setFormError] = useState('');
 
   /**
    * fetch an initial list of my repos to be displayed until the user actually performs a search operation
@@ -48,7 +49,15 @@ function App() {
         action=""
         onSubmit={e => {
           e.preventDefault();
-          searchRepos(searchKeyword);
+          if (searchKeyword) {
+            if (formError) {
+              //clear form errors if any
+              setFormError('');
+            }
+            searchRepos(searchKeyword);
+          } else {
+            setFormError('Please enter a search keyword first!');
+          }
         }}
       >
         <input
@@ -60,6 +69,7 @@ function App() {
         />
         <button>Search</button>
       </form>
+      <p className="error">{formError}</p>
 
       <ul className="cards-container">
         {loading ? <p>loading...</p> : repos.map(repo => <RepoCard repo={repo} key={repo.id} />)}
