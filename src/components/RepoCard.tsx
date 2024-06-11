@@ -23,13 +23,40 @@ export default function RepoCard({ repo }: { repo: Repo }) {
     }
   };
 
+  const unstarRepo = async () => {
+    try {
+      const starredResponse = await fetch(`https://api.github.com/user/starred/${repo.full_name}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `token ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+
+      if (starredResponse.ok) {
+        setIsStarred(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <li className="card">
       <div className="card__header">
         <img src={repo.owner.avatar_url} alt="" width={50} height={50} />
         <h2>{repo.name}</h2>
 
-        <Star onClick={() => starRepo()} className={isStarred ? 'filled' : ''} />
+        <Star
+          onClick={() => {
+            if (isStarred) {
+              unstarRepo();
+            } else {
+              starRepo();
+            }
+          }}
+          className={isStarred ? 'filled' : ''}
+        />
       </div>
       <dl>
         <div className="card__detail">
