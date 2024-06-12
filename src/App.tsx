@@ -19,23 +19,52 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [formError, setFormError] = useState('');
+  const [reposError, setReposError] = useState('');
 
   /**
    * fetch an initial list of my repos to be displayed until the user actually performs a search operation
    */
   const fetchData = async () => {
-    const reposResponse = await fetch(`https://api.github.com/users/sarahnouh/repos`);
-    const response = await reposResponse.json();
-    setRepos(response);
-    setLoading(false);
+    try {
+      const reposResponse = await fetch(`https://api.github.com/users/sarahnouh/repos`);
+      const response = await reposResponse.json();
+      if (reposResponse.status === 200) {
+        setRepos(response);
+        // clear repos error if any
+        if (reposError) {
+          setReposError('');
+        }
+        return;
+      }
+      setReposError('Error fetching repos');
+    } catch (err) {
+      console.log(err);
+      setReposError('Error fetching repositories!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const searchRepos = async (searchKeyword: string) => {
-    setLoading(true);
-    const reposResponse = await fetch(`https://api.github.com/search/repositories?per_page=10&q=${searchKeyword}`);
-    const response = await reposResponse.json();
-    setRepos(response.items);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const reposResponse = await fetch(`https://api.github.com/search/repositories?per_page=10&q=${searchKeyword}`);
+      const response = await reposResponse.json();
+
+      if (reposResponse.status === 200) {
+        setRepos(response.items);
+        // clear repos error if any
+        if (reposError) {
+          setReposError('');
+        }
+        return;
+      }
+      setReposError('Error searching repositories!');
+    } catch (err) {
+      setReposError('Error searching repositories!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -72,7 +101,15 @@ function App() {
       <p className="error">{formError}</p>
 
       <ul className="cards-container">
-        {loading ? <p>loading...</p> : repos.map(repo => <RepoCard repo={repo} key={repo.id} />)}
+        {loading ? (
+          <p>loading...</p>
+        ) : reposError ? (
+          <p className="error">{reposError}</p>
+        ) : repos && repos.length === 0 ? (
+          <p> No results found for your current search keyword, please try again with a different keyword</p>
+        ) : (
+          repos.map(repo => <RepoCard repo={repo} key={repo.id} />)
+        )}
       </ul>
     </main>
   );
