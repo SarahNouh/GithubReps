@@ -6,6 +6,8 @@ export default function RepoCard({ repo }: { repo: Repo }) {
   const [isStarred, setIsStarred] = useState(false);
 
   const starRepo = async () => {
+    // optimistically update ui with starred star
+    setIsStarred(true);
     try {
       const starredResponse = await fetch(`https://api.github.com/user/starred/${repo.full_name}`, {
         method: 'PUT',
@@ -15,15 +17,21 @@ export default function RepoCard({ repo }: { repo: Repo }) {
         },
       });
 
-      if (starredResponse.ok) {
-        setIsStarred(true);
+      // if request failed for any reason reset the star
+      if (!starredResponse.ok) {
+        setIsStarred(false);
       }
     } catch (err) {
       console.error(err);
+      // if request failed for any reason reset the star
+      setIsStarred(false);
     }
   };
 
   const unstarRepo = async () => {
+    // optimistically update ui with unstarred star
+    setIsStarred(false);
+
     try {
       const starredResponse = await fetch(`https://api.github.com/user/starred/${repo.full_name}`, {
         method: 'DELETE',
@@ -33,11 +41,14 @@ export default function RepoCard({ repo }: { repo: Repo }) {
         },
       });
 
-      if (starredResponse.ok) {
-        setIsStarred(false);
+      // if request failed for any reason reset the star
+      if (!starredResponse.ok) {
+        setIsStarred(true);
       }
     } catch (err) {
       console.error(err);
+      // if request failed for any reason reset the star
+      setIsStarred(true);
     }
   };
 
