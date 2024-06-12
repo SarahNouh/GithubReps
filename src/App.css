@@ -1,7 +1,12 @@
 .container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+  @media (min-width: 1200px) {
+    padding: 0;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 h1 {
@@ -40,13 +45,17 @@ form {
   list-style-type: none;
   padding-inline-start: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 .card {
   border: 1px solid lightgray;
   border-radius: 12px;
   padding: 8px 12px;
+  min-width: fit-content;
   .card__header {
     display: flex;
     gap: 12px;
